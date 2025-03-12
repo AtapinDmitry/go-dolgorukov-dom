@@ -43,10 +43,17 @@ func main() {
 	log = log.With(slog.String("env", cfg.Env)) // к каждому сообщению будет добавляться поле с информацией о текущем окружении
 
 	// init storage
-	_, err = postgres.New(cfg.DB.Host, cfg.DB.Port, cfg.DB.User, cfg.DB.Password, cfg.DB.DBName)
+	storage, err := postgres.New(cfg.DB.Host, cfg.DB.Port, cfg.DB.User, cfg.DB.Password, cfg.DB.DBName)
 	if err != nil {
 		log.Error("failed to initialize storage", sl.Err(err))
 	}
+
+	defer func() {
+		err = storage.Close()
+		if err != nil {
+			log.Error("failed to close storage", sl.Err(err))
+		}
+	}()
 
 	//
 	log.Info("initializing server", slog.String("address", cfg.Address)) // Помимо сообщения выведем параметр с адресом
