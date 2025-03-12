@@ -1,0 +1,18 @@
+{
+  "__comment1": "Env param could be 'local', 'dev' or 'prod'",
+  "env": "local",
+  "__comment2": "Following config section describes DB",
+  "db": {
+    "postgres_host": "localhost",
+    "postgres_port": "5432",
+    "postgres_user": "nazghoul",
+    "postgres_password": "12345678",
+    "db_name": "dd"
+  },
+  "__comment3": "Following config section describes HTTP-server",
+  "http_server": {
+    "address": "localhost:8082",
+    "timeout": "4s",
+    "idle_timeout": "60s"
+  }
+}
