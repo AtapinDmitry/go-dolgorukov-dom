@@ -7,12 +7,13 @@ import (
 	"dolgorukov-dom/internal/lib/logger/sl"
 	"dolgorukov-dom/internal/storage/postgres"
 	"fmt"
-	"github.com/spf13/cobra"
 	"log/slog"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/spf13/cobra"
 )
 
 const (

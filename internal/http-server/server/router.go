@@ -4,11 +4,12 @@ import (
 	"dolgorukov-dom/internal/http-server/handlers/users"
 	mwLogger "dolgorukov-dom/internal/http-server/middleware/logger"
 	"dolgorukov-dom/internal/storage/postgres"
+	"log/slog"
+	"net/http"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/render"
-	"log/slog"
-	"net/http"
 )
 
 func NewRouter(log *slog.Logger, storage *postgres.Storage) chi.Router {
