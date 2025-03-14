@@ -1,14 +1,16 @@
 package users
 
 import (
+	"dolgorukov-dom/internal/http-server/handlers"
 	"dolgorukov-dom/internal/lib/api/response"
 	"dolgorukov-dom/internal/storage/dto"
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
-	"github.com/go-chi/render"
 	"log/slog"
 	"net/http"
 	"strconv"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/render"
 )
 
 type Users interface {
@@ -99,24 +101,21 @@ func (uh *Handler) AddUserHandler() http.HandlerFunc {
 			slog.String("request_id", middleware.GetReqID(r.Context())),
 		)
 
-		rawUser, err := r.GetBody()
-		if err != nil {
-			log.Info("error getting body")
-			render.JSON(w, r, err)
-		}
-
 		var req UserRequest
 
-		err = render.DecodeJSON(rawUser, req)
-		if err != nil {
-			log.Info("error decoding body")
+		if err := handlers.DecodeJSONBody(r, &req); err != nil {
+			log.Info("error parsing body")
 			render.JSON(w, r, err)
+
+			return
 		}
 
 		id, err := uh.AddUser(req.Name, req.Email)
 		if err != nil {
 			log.Info("error adding user")
 			render.JSON(w, r, err)
+
+			return
 		}
 
 		render.JSON(w, r, id)
@@ -136,25 +135,25 @@ func (uh *Handler) UpdateUserHandler() http.HandlerFunc {
 		if err != nil {
 			log.Info("error getting user id")
 			render.JSON(w, r, err)
-		}
 
-		rawUser, err := r.GetBody()
-		if err != nil {
-			log.Info("error getting body")
-			render.JSON(w, r, err)
+			return
 		}
 
 		var req UserRequest
-		err = render.DecodeJSON(rawUser, &req)
-		if err != nil {
-			log.Info("error decoding body")
+
+		if err := handlers.DecodeJSONBody(r, &req); err != nil {
+			log.Info("error parsing body")
 			render.JSON(w, r, err)
+
+			return
 		}
 
 		err = uh.UpdateUser(int64(id), req.Name, req.Email)
 		if err != nil {
 			log.Info("error updating user")
 			render.JSON(w, r, err)
+
+			return
 		}
 
 		render.JSON(w, r, http.StatusOK)
