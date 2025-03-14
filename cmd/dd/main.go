@@ -1,13 +1,18 @@
 package main
 
 import (
+	"context"
 	"dolgorukov-dom/internal/config"
+	"dolgorukov-dom/internal/http-server/server"
 	"dolgorukov-dom/internal/lib/logger/sl"
 	"dolgorukov-dom/internal/storage/postgres"
 	"fmt"
 	"github.com/spf13/cobra"
 	"log/slog"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
 const (
@@ -58,6 +63,35 @@ func main() {
 	//
 	log.Info("initializing server", slog.String("address", cfg.Address)) // Помимо сообщения выведем параметр с адресом
 	log.Debug("logger debug mode enabled")
+
+	// starting server
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	srv := server.New(log, cfg, storage)
+
+	go func() {
+		if err := srv.ListenAndServe(); err != nil {
+			log.Error("failed to start server")
+		}
+	}()
+
+	log.Info("server started")
+
+	<-done
+	log.Info("stopping server")
+
+	// TODO: move timeout to config
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Error("failed to stop server", sl.Err(err))
+
+		return
+	}
+
+	log.Info("server stopped")
 }
 
 func setupLogger(env string) *slog.Logger {
