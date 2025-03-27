@@ -3,8 +3,9 @@ package config
 import (
 	"errors"
 	"fmt"
-	"github.com/spf13/viper"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
 type Config struct {
@@ -40,17 +41,17 @@ func MustLoad(configPath string) *Config {
 	if err := viper.ReadInConfig(); err != nil {
 		var configFileNotFoundError viper.ConfigFileNotFoundError
 		if errors.As(err, &configFileNotFoundError) {
-			panic(fmt.Errorf("config file not found: %s", err))
-		} else {
-			panic(fmt.Errorf("config file error: %s", err))
+			panic(fmt.Errorf("config file not found: %w", err))
 		}
+
+		panic(fmt.Errorf("config file error: %w", err))
 	}
 
 	var cfg Config
 
 	err := viper.Unmarshal(&cfg)
 	if err != nil {
-		panic(fmt.Errorf("error reading config file: %s", err))
+		panic(fmt.Errorf("error reading config file: %w", err))
 	}
 
 	return &cfg

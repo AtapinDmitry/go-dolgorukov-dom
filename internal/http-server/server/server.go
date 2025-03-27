@@ -1,10 +1,11 @@
 package server
 
 import (
-	"dolgorukov-dom/internal/config"
-	"dolgorukov-dom/internal/storage/postgres"
 	"log/slog"
 	"net/http"
+
+	"github.com/AtapinDmitry/go-dolgorukov-dom/internal/config"
+	"github.com/AtapinDmitry/go-dolgorukov-dom/internal/storage/postgres"
 )
 
 func New(log *slog.Logger, cfg *config.Config, storage *postgres.Storage) *http.Server {

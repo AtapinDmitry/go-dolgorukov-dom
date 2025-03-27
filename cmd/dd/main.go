@@ -2,17 +2,18 @@ package main
 
 import (
 	"context"
-	"dolgorukov-dom/internal/config"
-	"dolgorukov-dom/internal/http-server/server"
-	"dolgorukov-dom/internal/lib/logger/sl"
-	"dolgorukov-dom/internal/storage/postgres"
 	"fmt"
-	"github.com/spf13/cobra"
 	"log/slog"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/AtapinDmitry/go-dolgorukov-dom/internal/config"
+	"github.com/AtapinDmitry/go-dolgorukov-dom/internal/http-server/server"
+	"github.com/AtapinDmitry/go-dolgorukov-dom/internal/lib/logger/sl"
+	"github.com/AtapinDmitry/go-dolgorukov-dom/internal/storage/postgres"
+	"github.com/spf13/cobra"
 )
 
 const (
@@ -27,7 +28,7 @@ func main() {
 	rootCmd := cobra.Command{
 		Use:     "rest-service-example",
 		Version: "v1.0",
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(_ *cobra.Command, _ []string) {
 			fmt.Printf("configPath == %s", configPath)
 		},
 	}
@@ -50,13 +51,13 @@ func main() {
 	// init storage
 	storage, err := postgres.New(cfg.DB.Host, cfg.DB.Port, cfg.DB.User, cfg.DB.Password, cfg.DB.DBName)
 	if err != nil {
-		log.Error("failed to initialize storage", sl.Err(err))
+		log.Error("failed to initialize storage", sl.Err(err)) //nolint:govet
 	}
 
 	defer func() {
 		err = storage.Close()
 		if err != nil {
-			log.Error("failed to close storage", sl.Err(err))
+			log.Error("failed to close storage", sl.Err(err)) //nolint:govet
 		}
 	}()
 
@@ -86,7 +87,7 @@ func main() {
 	defer cancel()
 
 	if err := srv.Shutdown(ctx); err != nil {
-		log.Error("failed to stop server", sl.Err(err))
+		log.Error("failed to stop server", sl.Err(err)) //nolint:govet
 
 		return
 	}

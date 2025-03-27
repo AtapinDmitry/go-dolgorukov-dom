@@ -1,13 +1,13 @@
 package users
 
 import (
-	"dolgorukov-dom/internal/http-server/handlers"
-	"dolgorukov-dom/internal/lib/api/response"
-	"dolgorukov-dom/internal/storage/dto"
 	"log/slog"
 	"net/http"
 	"strconv"
 
+	"github.com/AtapinDmitry/go-dolgorukov-dom/internal/http-server/handlers"
+	"github.com/AtapinDmitry/go-dolgorukov-dom/internal/lib/api/response"
+	"github.com/AtapinDmitry/go-dolgorukov-dom/internal/storage/dto"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/render"

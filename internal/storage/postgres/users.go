@@ -2,10 +2,11 @@ package postgres
 
 import (
 	"database/sql"
-	"dolgorukov-dom/internal/storage/dto"
 	"errors"
 	"fmt"
 	"log"
+
+	"github.com/AtapinDmitry/go-dolgorukov-dom/internal/storage/dto"
 )
 
 // Errors
