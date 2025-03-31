@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"fmt"
+
 	"github.com/AtapinDmitry/go-dolgorukov-dom/internal/storage/dto"
 )
 

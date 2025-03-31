@@ -3,6 +3,7 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
+
 	"github.com/AtapinDmitry/go-dolgorukov-dom/internal/storage/dto"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -15,12 +16,6 @@ type Storage struct {
 
 func New(host, port, user, password, dbname string) (*Storage, error) {
 	const op = "storage.postgres.NewStorage"
-
-	//storageInfo := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", user, password, net.JoinHostPort(host, port), dbname)
-	//db, err := sql.Open("postgres", storageInfo)
-	//if err != nil {
-	//	return nil, fmt.Errorf("%s: failed to connect: %w", op, err)
-	//}
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", host, user, password, dbname, port)
 
