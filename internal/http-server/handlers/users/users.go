@@ -14,11 +14,11 @@ import (
 )
 
 type Users interface {
-	AddUser(name, email string) (int64, error)
-	GetUser(id int64) (*dto.User, error)
-	GetUsersList() ([]*dto.User, error)
-	UpdateUser(id int64, name, email string) error
-	DeleteUser(id int64) error
+	AddUser(name, email string) (uint, error)
+	GetUser(id uint) (*dto.User, error)
+	GetUsersList(filter *dto.UsersListFilter) ([]*dto.User, error)
+	UpdateUser(id uint, name, email string) error
+	DeleteUser(id uint) error
 }
 
 type Handler struct {
@@ -39,7 +39,7 @@ type UserResponse struct {
 
 func UserRoutes(uh *Handler) chi.Router {
 	r := chi.NewRouter()
-	r.Get("/", uh.GetUsersListHandler())
+	r.Get("/{page}/{pageSize}", uh.GetUsersListHandler())
 	r.Post("/", uh.AddUserHandler())
 	r.Get("/{id}", uh.GetUserHandler())
 	r.Put("/{id}", uh.UpdateUserHandler())
@@ -56,7 +56,24 @@ func (uh *Handler) GetUsersListHandler() http.HandlerFunc {
 			slog.String("request_id", middleware.GetReqID(r.Context())),
 		)
 
-		resUsersList, err := uh.GetUsersList()
+		page, err := strconv.Atoi(chi.URLParam(r, "page"))
+		if err != nil {
+			log.Info("error getting page number")
+			render.JSON(w, r, err)
+		}
+
+		pageSize, err := strconv.Atoi(chi.URLParam(r, "pageSize"))
+		if err != nil {
+			log.Info("error getting page size")
+			render.JSON(w, r, err)
+		}
+
+		filter := &dto.UsersListFilter{
+			Page:     page,
+			PageSize: pageSize,
+		}
+
+		resUsersList, err := uh.GetUsersList(filter)
 		if err != nil {
 			log.Info("error getting users list")
 
@@ -82,7 +99,7 @@ func (uh *Handler) GetUserHandler() http.HandlerFunc {
 			render.JSON(w, r, err)
 		}
 
-		user, err := uh.GetUser(int64(id))
+		user, err := uh.GetUser(uint(id))
 		if err != nil {
 			log.Info("error getting user")
 			render.JSON(w, r, err)
@@ -148,7 +165,7 @@ func (uh *Handler) UpdateUserHandler() http.HandlerFunc {
 			return
 		}
 
-		err = uh.UpdateUser(int64(id), req.Name, req.Email)
+		err = uh.UpdateUser(uint(id), req.Name, req.Email)
 		if err != nil {
 			log.Info("error updating user")
 			render.JSON(w, r, err)
@@ -174,7 +191,7 @@ func (uh *Handler) DeleteUserHandler() http.HandlerFunc {
 			log.Info("error getting user id")
 		}
 
-		err = uh.DeleteUser(int64(id))
+		err = uh.DeleteUser(uint(id))
 		if err != nil {
 			log.Info("error deleting user")
 		}

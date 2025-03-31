@@ -61,6 +61,11 @@ func main() {
 		}
 	}()
 
+	// DB migration
+	if err := storage.Migrate(); err != nil {
+		log.Error("failed to migrate storage", sl.Err(err)) //nolint:govet
+	}
+
 	//
 	log.Info("initializing server", slog.String("address", cfg.Address)) // Помимо сообщения выведем параметр с адресом
 	log.Debug("logger debug mode enabled")

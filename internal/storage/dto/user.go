@@ -1,7 +1,20 @@
 package dto
 
+import "gorm.io/gorm"
+
+const (
+	UsersPageSizeDefault = 20
+	UsersPageDefault     = 1
+)
+
+type UsersListFilter struct {
+	Page     int
+	PageSize int
+}
+
 type User struct {
-	ID    int64  `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
+	gorm.Model
+	ID    uint   `gorm:"primaryKey"`
+	Name  string `gorm:"size:255"`
+	Email string `gorm:"unique"`
 }
