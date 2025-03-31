@@ -51,19 +51,19 @@ func main() {
 	// init storage
 	storage, err := postgres.New(cfg.DB.Host, cfg.DB.Port, cfg.DB.User, cfg.DB.Password, cfg.DB.DBName)
 	if err != nil {
-		log.Error("failed to initialize storage", sl.Err(err)) //nolint:govet
+		log.Error("failed to initialize storage", sl.Err(err))
 	}
 
 	defer func() {
 		err = storage.Close()
 		if err != nil {
-			log.Error("failed to close storage", sl.Err(err)) //nolint:govet
+			log.Error("failed to close storage", sl.Err(err))
 		}
 	}()
 
 	// DB migration
 	if err := storage.Migrate(); err != nil {
-		log.Error("failed to migrate storage", sl.Err(err)) //nolint:govet
+		log.Error("failed to migrate storage", sl.Err(err))
 	}
 
 	//
@@ -92,7 +92,7 @@ func main() {
 	defer cancel()
 
 	if err := srv.Shutdown(ctx); err != nil {
-		log.Error("failed to stop server", sl.Err(err)) //nolint:govet
+		log.Error("failed to stop server", sl.Err(err))
 
 		return
 	}
