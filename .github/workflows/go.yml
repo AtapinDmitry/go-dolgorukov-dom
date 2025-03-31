@@ -67,18 +67,14 @@ jobs:
       - golangci-lint
     strategy:
       fail-fast: false
-      matrix:
-        go-version:
-          - '1.24.1'
-          - '1.20.3'
     runs-on: 'ubuntu-20.04'
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Go ${{ matrix.go-version }}
+      - name: Setup Go ${{ ENV.GO_VER }}
         uses: actions/setup-go@v5
         with:
-          go-version: ${{ matrix.go-version }}
+          go-version: ${{ ENV.GO_VER }}
 
       - name: unit test
         run: |
